@@ -1,18 +1,21 @@
 mod hello;
 mod about;
 mod greet;
+mod echo;
 
 use actix_web::{ web, App, HttpServer};
-use web::{get, ServiceConfig};
+use web::{get, post, ServiceConfig};
 use hello::hello;
 use about::about;
 use greet::greet;
+use echo::echo;
 
 fn config(cfg: &mut ServiceConfig){
     cfg
     .route("/", get().to(hello))
     .route("/about/{name}", get().to(about))
-    .route("/greet", get().to(greet));
+    .route("/greet", get().to(greet))
+    .route("/echo", post().to(echo));
 }
 
 #[actix_web::main]

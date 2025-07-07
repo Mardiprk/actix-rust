@@ -8,6 +8,6 @@ pub struct GreetParams {
 
 pub async fn greet(query: web::Query<GreetParams>) -> impl Responder{
     let name = &query.name;
-    let response = format!("Hi {}, Welcome to Actix", name);
+    let response = format!("Hi {}, Welcome to Actix Class.", name);
     HttpResponse::Ok().body(response)
 }
