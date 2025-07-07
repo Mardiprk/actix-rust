@@ -1,18 +1,18 @@
 mod hello;
+mod about;
+mod greet;
 
-use actix_web::{ web, App, HttpResponse, HttpServer, Responder};
-use web::{get, ServiceConfig, Path};
+use actix_web::{ web, App, HttpServer};
+use web::{get, ServiceConfig};
 use hello::hello;
-
-async fn greet(name: Path<String>) -> impl Responder{
-    let response = format!("{}, wants to learn about actix", name);
-    HttpResponse::Ok().body(response)
-}
+use about::about;
+use greet::greet;
 
 fn config(cfg: &mut ServiceConfig){
     cfg
     .route("/", get().to(hello))
-    .route("/about/{name}", get().to(greet));
+    .route("/about/{name}", get().to(about))
+    .route("/greet", get().to(greet));
 }
 
 #[actix_web::main]
