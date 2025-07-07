@@ -1,42 +1,26 @@
-use std::fmt::format;
+use actix_web::{ web, App, HttpResponse, HttpServer, Responder};
+use web::{get};
 
-use actix_web::{web::{self, get, post}, App, HttpResponse, HttpServer, Result};
-use serde::{Deserialize, Serialize};
-
-#[derive(Deserialize)]
-struct GreetRequest{
-    name: String
+async fn hello() -> impl Responder{
+    HttpResponse::Ok().body("Hello Actix")
 }
 
-#[derive(Deserialize, Serialize)]
-struct GreetResponse{
-    message: String
-}
-async fn hello() -> Result<HttpResponse>{
-    Ok(HttpResponse::Ok().body("Hello, Actix"))
+async fn greet(name: web::Path<String>) -> impl Responder{
+    let response = format!("{}, wants to learn about actix", name);
+    HttpResponse::Ok().body(response)
 }
 
-async fn about(name: web::Path<String>) -> Result<HttpResponse>{
-    Ok(HttpResponse::Ok().body(format!("{} wants to know about Actix", name)))
-}
-
-async  fn greet(info: web::Json<GreetRequest>) -> Result<HttpResponse>{
-    let res = GreetResponse{
-        message: format!("Hello, {}!", info.name),
-    };
-    Ok(HttpResponse::Ok().json(res))
+fn config(cfg: &mut web::ServiceConfig){
+    cfg
+    .route("/", get().to(hello))
+    .route("/about/{name}", get().to(greet));
 }
 
 #[actix_web::main]
-async fn main() -> std::io::Result<()>{
-    println!("Running server @ http://localhost:8080");
+async  fn main() -> std::io::Result<()>{
+    println!("Server running @ http://localhost:8080");
 
     HttpServer::new(||{
-        App::new()
-        .route("/", get().to(hello))
-        .route("/about/{name}", get().to(about))
-        .route("/greet", post().to(greet))
-    }).bind("127.0.0.1:8080")?
-    .run()
-    .await
+        App::new().configure(config)
+    }).bind(("127.0.0.1", 8080))?.run().await
 }
