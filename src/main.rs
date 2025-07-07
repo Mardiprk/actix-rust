@@ -1,16 +1,15 @@
+mod hello;
+
 use actix_web::{ web, App, HttpResponse, HttpServer, Responder};
-use web::{get};
+use web::{get, ServiceConfig, Path};
+use hello::hello;
 
-async fn hello() -> impl Responder{
-    HttpResponse::Ok().body("Hello Actix")
-}
-
-async fn greet(name: web::Path<String>) -> impl Responder{
+async fn greet(name: Path<String>) -> impl Responder{
     let response = format!("{}, wants to learn about actix", name);
     HttpResponse::Ok().body(response)
 }
 
-fn config(cfg: &mut web::ServiceConfig){
+fn config(cfg: &mut ServiceConfig){
     cfg
     .route("/", get().to(hello))
     .route("/about/{name}", get().to(greet));
@@ -18,7 +17,7 @@ fn config(cfg: &mut web::ServiceConfig){
 
 #[actix_web::main]
 async  fn main() -> std::io::Result<()>{
-    println!("Server running @ http://localhost:8080");
+    println!("🚀 Server running @ http://localhost:8080");
 
     HttpServer::new(||{
         App::new().configure(config)
