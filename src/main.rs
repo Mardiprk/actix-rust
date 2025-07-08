@@ -3,6 +3,7 @@ mod about;
 mod greet;
 mod echo;
 mod counter;
+mod users;
 
 use std::sync::{Mutex, Arc};
 
