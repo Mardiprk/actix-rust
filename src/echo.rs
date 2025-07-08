@@ -9,14 +9,13 @@ pub struct EchoRequest{
 
 #[derive(Serialize)]
 pub struct EchoResponse{
-    received: String
+    received: String,
 }
 
 pub async fn echo(body: web::Json<EchoRequest>) -> impl Responder{
-    let data = body.into_inner();
-    let reply = format!("{} says: {}", data.name, data.message);
-
+    let message = body.into_inner();
+    let reply = format!("{} says {}", message.name, message.message);
     HttpResponse::Ok().json(EchoResponse{
-        received: reply,
+        received: reply
     })
 }
